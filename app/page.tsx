@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { PicLiteApp } from "./piclite-app";
+import { ProductToolPage } from "./product-page";
+import { productPages, SITE_URL } from "./product-config";
 
 export const metadata: Metadata = {
-  title: "PicLite 图轻 — 图片压缩工作台",
-  description:
-    "在浏览器或 Windows、macOS、Linux 上批量压缩图片、调整尺寸、对比画质，并自动监测本地文件夹。",
+  title: productPages[""].title,
+  description: productPages[""].description,
+  alternates: { canonical: SITE_URL },
 };
 
 export default function Home() {
-  return <PicLiteApp />;
+  return <ProductToolPage page={productPages[""]} />;
 }

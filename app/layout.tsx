@@ -1,31 +1,14 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import "./globals.css";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host") || "localhost:3000";
-  const protocol = requestHeaders.get("x-forwarded-proto") || (host.startsWith("localhost") ? "http" : "https");
-  const metadataBase = new URL(`${protocol}://${host}`);
-  return {
-    metadataBase,
-    title: { default: "PicLite 图轻", template: "%s · PicLite 图轻" },
-    description: "本地优先、可自托管的图片与 GIF 压缩工作台。支持无损优化、尺寸调整、实时对比、剪贴板导入与桌面文件夹监测。",
-    applicationName: "PicLite 图轻",
-    openGraph: {
-      title: "PicLite 图轻",
-      description: "清晰，轻一点。浏览器与 Windows、macOS、Linux 上的本地图片压缩工作台。",
-      type: "website",
-      images: [{ url: "/og.png", width: 1731, height: 909, alt: "PicLite 图轻 — 清晰，轻一点。" }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "PicLite 图轻",
-      description: "清晰，轻一点。浏览器与 Windows、macOS、Linux 上的本地图片压缩工作台。",
-      images: ["/og.png"],
-    },
-  };
-}
+export const metadata: Metadata = {
+  metadataBase: new URL("https://compress100.com"),
+  title: { default: "Compress100 - Private Image Compression", template: "%s | Compress100" },
+  description: "Compress images to a target file size in your browser. Private, free and no upload required.",
+  applicationName: "Compress100",
+  openGraph: { title: "Compress100 - Private Image Compression", description: "Compress images locally in your browser. No upload required.", type: "website", images: [{ url: "/og.png", width: 1731, height: 909, alt: "Compress100 private image compression" }] },
+  twitter: { card: "summary_large_image", title: "Compress100 - Private Image Compression", description: "Compress images locally in your browser. No upload required.", images: ["/og.png"] },
+};
 
 export default function RootLayout({
   children,
@@ -33,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
+    <html lang="en">
       <body>{children}</body>
     </html>
   );
