@@ -1,47 +1,78 @@
-# PicLite
+# Compress100 / PicLite
 
-A local-first image optimiser for content creators and developers, available on Windows, macOS, Linux, and as a self-hosted web app.
+Compress100 / PicLite is a local-first image processing project with a browser-based target-size compressor and a cross-platform desktop workbench built with Tauri 2.
 
-[中文](README.md) · [Desktop downloads](https://github.com/amiaoapp/PicLite/releases) · [Web demo](https://amiaoapp.github.io/PicLite/) · [Plugin development](docs/PLUGIN_DEVELOPMENT.en-US.md) · [Issues](https://github.com/amiaoapp/PicLite/issues)
+It is designed for people who need to meet image upload limits, content creators, and developers who want to process images locally in batches. Images are not sent to the project server by default.
 
-![PicLite workspace](public/og.png)
+## Project Components
 
-## Highlights
+### Compress100 Web
 
-- Import, convert, optimise, and proportionally resize JPEG, PNG, WebP, and GIF files
-- Automatically compare candidate formats and choose a smaller result with limited visual loss
-- Before/after preview, actual output size, continuous quality and scale controls, and text watermarks
-- Limit output to 200 KB, 100 KB, 50 KB, or a custom size using measured quality and dimension adjustments
-- Import an entire folder recursively; large batches use the same low-memory queue
-- Clipboard monitoring, global shortcuts, watched folders, and a local result library
-- Clop-inspired floating results with copy, preview, undo, further downscaling, and format switching, plus clear success or failure feedback in the lower-left status area
-- Configurable result limit, stacked/list layouts, and automatic dismissal
-- Replace, rename beside the source, or export to a fixed folder with scheduled cleanup
-- Upload to WebDAV, S3/R2, OSS, FTP, or SFTP image hosts
-- Load local HTML/JavaScript or URL workbench plugins; the library and folder watcher can also be toggled independently
-- Tauri 2 + Rust desktop apps; images stay on your device by default
+Compress100 is the browser-first product in this repository. It works without installation or an account:
 
-### Floating-window workflow
+- Compress images to 50KB, 100KB, or 200KB targets
+- Support JPG, PNG, WebP, and GIF
+- Compress animated GIFs frame by frame
+- Process one or multiple files
+- Accept drag-and-drop input
+- Show actual output size, dimensions, and savings
+- Process, preview, and download in the current browser tab
+- Use no image upload endpoint; original images stay on the device
 
-The desktop app can open its floating window from a global shortcut, copied image, dropped file, or the local image picker, without opening the full workbench first. After the smart first pass, hover over the preview to copy, preview, reveal, undo, downscale again, switch formats, add a watermark, or upload. Floating results are draggable and resizable, support cycling stacks and expanded lists, result limits and automatic dismissal, and let you choose up to six action buttons in Settings.
+Online entry points:
 
-## Download
+- [Compress100 100KB](https://compress100.com/)
+- [Compress to 50KB](https://compress100.com/compress-to-50kb)
+- [Compress to 200KB](https://compress100.com/compress-to-200kb)
+- [GIF Compressor](https://compress100.com/gif-compressor)
+- [GitHub Pages Demo](https://amiaoapp.github.io/PicLite/)
 
-Get the latest installers from [GitHub Releases](https://github.com/amiaoapp/PicLite/releases):
+The browser product is intended for quick one-off or batch compression. System tray integration, global shortcuts, persistent clipboard monitoring, and watched folders belong to the desktop app, not the Compress100 Web pages.
+
+### PicLite Desktop
+
+PicLite is the full desktop workbench in this repository. It uses Tauri 2 and Rust and supports Windows, macOS, and Linux. Desktop-only capabilities include:
+
+- Import, convert, compress, and proportionally resize JPEG, PNG, WebP, and GIF files
+- Batch import with a low-memory processing queue
+- Before/after comparison and actual size and dimension reporting
+- Continuous quality, dimension, and output-format controls
+- Text watermarks
+- 50KB, 100KB, 200KB, or custom size limits
+- Clipboard monitoring, global shortcuts, and watched folders
+- Local result library and operation management
+- Floating results with copy, preview, reveal, undo, further downscaling, and format switching
+- Replace the source, rename beside it, or export to a fixed directory
+- Result limits, stacked/expanded layouts, and automatic dismissal
+- WebDAV, S3/R2, OSS, FTP, and SFTP image-host uploads
+- Local HTML/JavaScript or HTTPS URL workbench plugins
+
+## Compression Model
+
+The Web compressor reads the image dimensions and uses the actual Blob size produced by the browser encoder. It adjusts the compression parameters progressively:
+
+1. JPG, WebP, and GIF files first reduce encoding quality or color count.
+2. PNG files first try reducing output dimensions.
+3. If necessary, both dimensions and quality are adjusted.
+4. Every attempt is evaluated using the actual encoded result rather than a theoretical size estimate.
+
+If the original file is already below the target, it is kept unchanged to avoid unnecessary quality loss. Encoders produce discrete file sizes, so a result may be well below the target. If the limit cannot be reached within the quality guardrails, the closest result is kept and the UI reports that condition. Exact target sizes are not guaranteed.
+
+Animated GIFs are decoded, resized, color-quantized, and re-encoded frame by frame. Long or high-resolution GIFs may take longer to process. GIF compression requires a recent Chrome or Edge version with `ImageDecoder` support.
+
+## Desktop Downloads
+
+Download installers from [GitHub Releases](https://github.com/amiaoapp/PicLite/releases):
 
 - Windows x64 / ARM64: `.exe` or `.msi`
 - macOS Apple Silicon / Intel: `.dmg`
 - Linux x64 / ARM64: `.AppImage` or `.deb`
 
-The current macOS builds use ad-hoc signing. On first launch, macOS may require approval in System Settings → Privacy & Security.
+Current macOS builds use ad-hoc signing. On first launch, macOS may require approval in System Settings → Privacy & Security.
 
-## Web and Docker
+## Self-Hosting with Docker
 
-The [GitHub Pages demo](https://amiaoapp.github.io/PicLite/) is a static, install-free build. Images are processed locally in your browser and are not uploaded to a server. Use the desktop app for the system tray, global shortcuts, persistent clipboard monitoring, and watched folders.
-
-For a LAN deployment, custom domain, or your own service endpoint, use the GHCR image. The default service port is `3456`.
-
-### Docker Compose (recommended)
+The Docker Web service listens on container port `3456` by default. With Docker Compose:
 
 ```bash
 git clone https://github.com/amiaoapp/PicLite.git
@@ -50,11 +81,9 @@ docker compose pull
 docker compose up -d
 ```
 
-Upgrade, inspect status, and follow logs:
+Inspect status and logs:
 
 ```bash
-docker compose pull
-docker compose up -d --remove-orphans
 docker compose ps
 docker compose logs -f piclite
 ```
@@ -64,16 +93,16 @@ Create a `.env` file in the project directory to change the bind address, host p
 ```dotenv
 PICLITE_BIND=0.0.0.0
 PICLITE_PORT=3456
-PICLITE_TAG=1.5.0
+PICLITE_TAG=latest
 ```
 
-To build from the current source tree instead:
+Build from the current source tree:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
 ```
 
-### Docker Run
+Or run the GHCR image directly:
 
 ```bash
 docker run -d \
@@ -83,38 +112,100 @@ docker run -d \
   ghcr.io/amiaoapp/piclite:latest
 ```
 
-Open `http://SERVER_IP:3456`. Both the GitHub Pages and Docker web builds include the compression workspace; browser security restrictions prevent system-tray, global-shortcut, and persistent folder-monitoring features.
+Open `http://SERVER_IP:3456`. Browser security restrictions mean that the Web service cannot provide the desktop app's system tray, global shortcuts, or persistent folder monitoring.
 
 For a reverse proxy, forward your domain to `http://127.0.0.1:3456`. Caddy example:
 
 ```caddyfile
-piclite.example.com {
+compress100.example.com {
   reverse_proxy 127.0.0.1:3456
 }
 ```
 
-## Development
+## Local Development
 
-Requires Node.js 22.13+, stable Rust, and the Tauri 2 system dependencies for your target platform.
+### Requirements
+
+- Node.js `22.13` or newer
+- Stable Rust
+- Tauri 2 system dependencies for your target platform
+
+Install dependencies:
 
 ```bash
 npm install
+```
+
+Start the Web development server:
+
+```bash
 npm run dev
+```
+
+Start the desktop development environment:
+
+```bash
 npm run desktop:dev
 ```
 
-Test and build:
+## Testing and Builds
+
+Run the complete test suite:
 
 ```bash
 npm test
+```
+
+Run ESLint:
+
+```bash
+npm run lint
+```
+
+Build the Web app:
+
+```bash
+npm run build
+```
+
+Build the GitHub Pages version:
+
+```bash
+npm run pages:build
+```
+
+Build the desktop app:
+
+```bash
 npm run desktop:build
 ```
 
-## Create a workbench plugin
+Platform-specific build scripts are also available:
 
-PicLite plugins are no longer embedded with an `iframe`. The desktop app fetches HTML/CSS/JavaScript and mounts it in a trusted workbench runtime, avoiding `X-Frame-Options` failures and allowing a custom tab name. Install only code you trust.
+```bash
+npm run desktop:build:win
+npm run desktop:build:win:arm64
+npm run desktop:build:mac:arm64
+npm run desktop:build:mac:x64
+npm run desktop:build:linux:arm64
+npm run desktop:build:linux:x64
+```
 
-A minimal plugin is a single HTML file:
+## Repository Layout
+
+```text
+app/                 Compress100 Web pages, compression logic, and SEO config
+desktop/             PicLite desktop React renderer and state management
+src-tauri/            Tauri 2 / Rust host, permissions, and packaging config
+worker/               Cloudflare Worker / Vinext entry point
+build/                Build helpers and application icons
+```
+
+## Workbench Plugins
+
+Desktop plugins can be local `.html`, `.js`, or `manifest.json` files, or HTTPS URLs. They are mounted in the desktop workbench's trusted plugin runtime rather than embedded with an `iframe`.
+
+Minimal example:
 
 ```html
 <!doctype html>
@@ -130,20 +221,30 @@ A minimal plugin is a single HTML file:
 </script>
 ```
 
-Open Settings → Plugins to import `.html`, `.js`, or `manifest.json`, or enter a custom name and HTTPS URL for the desktop app to fetch. Manifest example:
+Open Settings → Plugins in the desktop app to import a plugin, or enter a custom name and HTTPS URL. See the [plugin development guide](docs/PLUGIN_DEVELOPMENT.en-US.md) for the complete API, asset URL rules, and publishing notes. Plugins are executable code; install only plugins from sources you trust.
 
-```json
-{
-  "nameZh": "封面设计大师",
-  "nameEn": "Banner Maker",
-  "url": "https://example.com/plugin/"
-}
-```
+## Privacy and Security
 
-See the full [plugin development guide](docs/PLUGIN_DEVELOPMENT.en-US.md) for the runtime API, asset URL rules, and publishing notes.
+- Compress100 Web reads, decodes, compresses, previews, and downloads files in the current browser tab.
+- The project has no endpoint for receiving original image files for compression.
+- Generated preview objects are released when the browser tab is closed.
+- Re-encoding JPG and PNG files removes common embedded metadata.
+- Desktop files leave the device only when the user explicitly configures and uses an image-host upload.
+- Plugins are executable code and should be treated accordingly.
 
-## Privacy and licence
+More detail is available in:
 
-Optimisation runs locally in the browser or desktop app. Files leave your device only when you explicitly upload them to a storage provider you configured.
+- [Project overview](docs/PROJECT.md)
+- [Product brief](docs/PRODUCT.md)
+- [Deployment guide](docs/DEPLOYMENT.md)
+- [SEO specification](docs/SEO.md)
+- [Plugin development](docs/PLUGIN_DEVELOPMENT.en-US.md)
+- [License compliance](docs/LICENSE-COMPLIANCE.md)
 
-PicLite is licensed under [GPL-3.0-or-later](LICENSE). Its desktop automation workflow is inspired by and adapted from the GPL-licensed [FuzzyIdeas/Clop](https://github.com/FuzzyIdeas/Clop) project. PicLite does not use the Clop trademark. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+## License
+
+PicLite is licensed under [GPL-3.0-or-later](LICENSE).
+
+Its desktop automation workflow is inspired by and adapted from the GPL-licensed [FuzzyIdeas/Clop](https://github.com/FuzzyIdeas/Clop) project. PicLite does not use the Clop trademark. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for details.
+
+For issues and feature requests, use [GitHub Issues](https://github.com/amiaoapp/PicLite/issues).
