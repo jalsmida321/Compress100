@@ -1,4 +1,4 @@
-import { ArrowRight, Github, ImageDown, LockKeyhole, ScanSearch } from "lucide-react";
+import { ArrowRight, Coffee, ImageDown, LockKeyhole, ScanSearch } from "lucide-react";
 import Link from "next/link";
 import { pagePath, productPages, SITE_URL, type ProductPage } from "./product-config";
 import { WebCompressor } from "./web-compressor";
@@ -44,7 +44,7 @@ export function ProductToolPage({ page }: { page: ProductPage }) {
           <Link href="/compress-to-200kb">200KB</Link>
           <Link href="/gif-compressor">GIF</Link>
         </nav>
-        <a className="source-link" href="https://github.com/amiaoapp/PicLite" target="_blank" rel="noreferrer"><Github size={16} /> Source</a>
+        <a className="source-link" href="https://buymeacoffee.com/jalsmidaw" target="_blank" rel="noreferrer"><Coffee size={16} /> Buy me a coffee</a>
       </header>
 
       <main className="product-main">
