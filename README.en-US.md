@@ -70,6 +70,35 @@ Download installers from [GitHub Releases](https://github.com/amiaoapp/PicLite/r
 
 Current macOS builds use ad-hoc signing. On first launch, macOS may require approval in System Settings → Privacy & Security.
 
+## Deploy to Cloudflare Workers
+
+The Web product is configured for Cloudflare Workers through `vite.config.ts` and `worker/index.ts`. Log in to Cloudflare before the first deployment:
+
+```bash
+npx wrangler login
+npx wrangler whoami
+```
+
+Build and preview the Worker locally:
+
+```bash
+npm ci
+npm run cf:build
+npm run cf:preview
+```
+
+After checking the home page and all four product routes, deploy with:
+
+```bash
+npm run cf:deploy
+```
+
+The first deployment creates a Worker named `compress100` and prints a `workers.dev` URL. For production, bind `compress100.com` to the Worker in Cloudflare and keep the domain's DNS managed by Cloudflare. Once the custom domain is active, the project's canonical, sitemap, and Open Graph URLs will match production.
+
+The Cloudflare Worker serves the Web application and its assets only. Image reading, decoding, compression, preview, and download still happen in the user's browser; original images are not uploaded to the Worker.
+
+See the [Cloudflare Workers deployment guide](docs/DEPLOYMENT.md) for details.
+
 ## Self-Hosting with Docker
 
 The Docker Web service listens on container port `3456` by default. With Docker Compose:

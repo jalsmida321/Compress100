@@ -76,7 +76,7 @@ The main Web build uses Vinext with Next's `standalone` output. Docker runs the 
 
 ### Cloudflare
 
-The repository retains a Cloudflare Worker entry point for Vinext and image optimization. Production deployment should use Node.js `22.13+`, `npm ci`, `npm run build`, and the configured Pages build/output settings. The canonical site URL is maintained in `app/product-config.ts`.
+The repository retains a Cloudflare Worker entry point for Vinext and image optimization. Production deployment uses Node.js `22.13+`, `npm ci`, `npm run cf:build`, and `npm run cf:deploy`. The canonical site URL is maintained in `app/product-config.ts`.
 
 ### Desktop Releases
 
@@ -113,7 +113,7 @@ npm run lint
 - Exact target sizes are not guaranteed.
 - Browser builds cannot provide system tray, global shortcuts, persistent clipboard monitoring, or watched folders.
 - The desktop plugin runtime executes third-party code and should not be treated as a sandbox for untrusted plugins.
-- Cloudflare Pages and Docker deployment configuration must be verified against the selected production platform before launch.
+- Cloudflare Workers and Docker are separate deployment options and must be verified independently before launch.
 
 ## Related Documentation
 

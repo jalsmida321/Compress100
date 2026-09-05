@@ -70,6 +70,35 @@ Web 端会先读取图片尺寸，并使用浏览器实际编码产生的 Blob �
 
 当前 macOS 构建使用 ad-hoc 签名。首次启动时，macOS 可能需要在“系统设置 → 隐私与安全性”中允许打开应用。
 
+## Cloudflare Workers 部署
+
+当前 Web 主站使用 Cloudflare Workers 部署，构建入口由 `vite.config.ts` 和 `worker/index.ts` 提供。首次使用前，在本机登录 Cloudflare：
+
+```bash
+npx wrangler login
+npx wrangler whoami
+```
+
+本地构建并预览 Workers 运行时：
+
+```bash
+npm ci
+npm run cf:build
+npm run cf:preview
+```
+
+确认页面和四个产品路由正常后部署：
+
+```bash
+npm run cf:deploy
+```
+
+首次部署会创建名为 `compress100` 的 Worker，并输出 `workers.dev` 地址。生产环境建议在 Cloudflare 控制台为 Worker 绑定 `compress100.com`，并确保 DNS 记录由 Cloudflare 管理。绑定正式域名后，项目中的 Canonical、Sitemap 和 Open Graph 地址会与线上地址一致。
+
+Cloudflare Worker 只负责返回网页和静态资源。图片读取、解码、压缩、预览和下载仍然在用户浏览器中完成，原始图片不会上传到 Worker。
+
+完整部署说明见[Cloudflare Workers 部署文档](docs/DEPLOYMENT.md)。
+
 ## Docker 自托管
 
 Docker Web 服务默认监听容器内的 `3456` 端口。使用 Docker Compose：
