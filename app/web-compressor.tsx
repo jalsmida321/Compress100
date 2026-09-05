@@ -163,7 +163,7 @@ export function WebCompressor({ page }: { page: ProductPage }) {
                 {result.status === "done" && <>
                   {result.reachedTarget ? <Check size={16} /> : <AlertCircle size={16} />}
                   <strong>{formatBytes(result.outputBytes || 0)}</strong>
-                  <span>{saved > 0 ? `${saved}% smaller` : "Original kept"}</span>
+                  <span>{saved > 0 ? `Saved ${saved}% · ${result.reachedTarget ? `Under ${page.targetKb}KB` : "Closest result"}` : "Original kept"}</span>
                 </>}
               </div>
               <div className="result-actions">

@@ -27,13 +27,25 @@ export const productPages: Record<ProductPage["slug"], ProductPage> = {
   "": {
     slug: "",
     keyword: "compress image to 100kb",
-    title: "Compress Image to 100KB Online - Private, No Upload",
+    title: "Compress Image to 100KB Online - Free and Private",
     description: "Compress JPG, PNG, WebP or GIF images to 100KB or less in your browser. Free, private and no upload required.",
-    heading: "Compress an image to 100KB",
-    lead: "Meet a 100KB file limit without sending your image to a server.",
+    heading: "Compress Image to 100KB",
+    lead: "Reduce your image to 100KB or less directly in your browser. Your files never leave your device.",
     targetKb: 100,
     faq: [
       ...sharedFaq,
+      {
+        question: "Can I compress an image to 100KB for free?",
+        answer: "Yes. Compress100 lets you reduce images to 100KB or less without signing up or paying.",
+      },
+      {
+        question: "Will compressing an image reduce its quality?",
+        answer: "Compression can reduce quality by adjusting encoding and, only when needed, image dimensions. Compress100 aims to keep the best visual quality within the target size.",
+      },
+      {
+        question: "Can I use this for an application or online form?",
+        answer: "Yes. A 100KB-or-less image can be useful for applications, profiles and upload forms, but check each service's separate format and dimension requirements.",
+      },
       {
         question: "Will the result be exactly 100KB?",
         answer: "Compress100 aims for 100KB or less. Image encoders produce discrete file sizes, so the final result may be smaller than 100KB.",

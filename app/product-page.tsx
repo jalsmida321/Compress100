@@ -49,12 +49,24 @@ export function ProductToolPage({ page }: { page: ProductPage }) {
 
       <main className="product-main">
         <section className="tool-intro">
-          <div className="trust-line"><span><LockKeyhole size={14} /> PRIVATE BY DESIGN</span><span>FREE · NO SIGNUP</span></div>
+          <div className="trust-line"><span><LockKeyhole size={14} /> PRIVATE BY DESIGN · 100% LOCAL PROCESSING</span><span>FREE · NO SIGNUP</span></div>
           <h1>{page.heading}</h1>
           <p>{page.lead}</p>
         </section>
 
         <WebCompressor page={page} />
+
+        <section className="content-section seo-intro">
+          <header><span className="section-label">HOW TO USE</span><h2>Compress an image to 100KB in three steps</h2></header>
+          <div className="steps">
+            <article><span>01</span><h3>Choose an image</h3><p>Drop a JPG, PNG, WebP or GIF into the compressor, or select one from your device.</p></article>
+            <article><span>02</span><h3>Set the target size</h3><p>The 100KB target is applied automatically. The browser tests the real encoded file size.</p></article>
+            <article><span>03</span><h3>Download the result</h3><p>Review the original size, output size and savings, then download the compressed image.</p></article>
+          </div>
+          <div className="privacy-copy"><p>Compress100 is designed for online applications, profile photos, email attachments and websites with strict upload limits. It reduces images to 100KB or less while preserving as much visual quality as possible.</p><p>Your image is processed locally in this browser tab. It does not need to be uploaded to a server or stored in an account.</p></div>
+        </section>
+
+        <section className="privacy-section"><div><span className="section-label">SUPPORTED FORMATS</span><h2>JPG, PNG, WebP and GIF</h2></div><div className="privacy-copy"><p>Use Compress100 for JPG and JPEG photos, transparent PNG graphics, WebP images and animated GIF files. Output size and visual results depend on the original image, format and complexity.</p><p>A 100KB limit means 100KB or smaller, not necessarily exactly 100KB. Image encoders produce discrete file sizes, so the final file may be below the limit.</p></div></section>
 
         <section className="proof-band" aria-label="Privacy and product facts">
           <div><strong>0</strong><span>uploads</span></div>
