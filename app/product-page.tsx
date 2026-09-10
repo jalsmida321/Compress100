@@ -43,6 +43,7 @@ export function ProductToolPage({ page }: { page: ProductPage }) {
           <Link href="/compress-to-50kb">50KB</Link>
           <Link href="/compress-to-200kb">200KB</Link>
           <Link href="/gif-compressor">GIF</Link>
+          <Link href="/image-resizer">Resize</Link>
         </nav>
         <a className="source-link" href="https://buymeacoffee.com/jalsmidaw" target="_blank" rel="noreferrer"><Coffee size={16} /> Buy me a coffee</a>
       </header>

@@ -3,7 +3,7 @@
 import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 import { AlertCircle, Check, Download, FileImage, LoaderCircle, Lock, Trash2, Upload } from "lucide-react";
 import type { ProductPage } from "./product-config";
-import { compressToLimit, formatBytes } from "./web-compression";
+import { compressToLimit, formatBytes, resizeImage } from "./web-compression";
 
 type Result = {
   id: string;
@@ -30,6 +30,7 @@ export function WebCompressor({ page }: { page: ProductPage }) {
   const resultsRef = useRef<Result[]>([]);
   const [results, setResults] = useState<Result[]>([]);
   const [dragging, setDragging] = useState(false);
+  const [dimensions, setDimensions] = useState({ width: 1200, height: 800 });
 
   useEffect(() => {
     resultsRef.current = results;
@@ -55,7 +56,7 @@ export function WebCompressor({ page }: { page: ProductPage }) {
 
     await Promise.all(pending.map(async (item) => {
       try {
-        const output = await compressToLimit(item.file, page.targetKb);
+        const output = page.resizer ? await resizeImage(item.file, dimensions.width, dimensions.height) : await compressToLimit(item.file, page.targetKb);
         const outputUrl = URL.createObjectURL(output.blob);
         setResults((current) => current.map((result) => result.id === item.id ? {
           ...result,
@@ -115,7 +116,7 @@ export function WebCompressor({ page }: { page: ProductPage }) {
       <header className="compressor-header">
         <div>
           <span className="section-label">LOCAL COMPRESSOR</span>
-          <h2 id="compressor-title">Target: {page.gifOnly ? "custom GIF" : `${page.targetKb}KB or less`}</h2>
+          <h2 id="compressor-title">{page.resizer ? "Set output dimensions" : `Target: ${page.gifOnly ? "custom GIF" : `${page.targetKb}KB or less`}`}</h2>
         </div>
         <span className="local-status"><Lock size={14} aria-hidden="true" /> No upload</span>
       </header>
@@ -137,6 +138,7 @@ export function WebCompressor({ page }: { page: ProductPage }) {
           <FileImage size={16} aria-hidden="true" /> Choose images
         </button>
       </div>
+      {page.resizer && <div className="resize-settings"><label>Width <input type="number" min="1" value={dimensions.width} onChange={(event) => setDimensions({ ...dimensions, width: Number(event.target.value) || 1 })} /></label><span>×</span><label>Height <input type="number" min="1" value={dimensions.height} onChange={(event) => setDimensions({ ...dimensions, height: Number(event.target.value) || 1 })} /></label></div>}
 
       {page.gifOnly && (
         <label className="gif-target">

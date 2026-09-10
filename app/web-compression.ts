@@ -123,6 +123,11 @@ export async function compressToLimit(file: File, targetKb: number): Promise<Com
   return { ...smallest, reachedTarget: smallest.blob.size <= targetBytes };
 }
 
+export async function resizeImage(file: File, width: number, height: number): Promise<CompressionOutput> {
+  const blob = file.type === "image/gif" ? await encodeGif(file, width, height, 90) : await encodeStatic(file, width, height, 90);
+  return { blob, width, height, reachedTarget: true };
+}
+
 export function formatBytes(bytes: number) {
   if (bytes < 1_000) return `${bytes} B`;
   if (bytes < 1_000_000) return `${(bytes / 1_000).toFixed(bytes >= 100_000 ? 0 : 1)} KB`;

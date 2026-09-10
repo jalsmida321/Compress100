@@ -1,7 +1,7 @@
 export const SITE_URL = "https://compress100.com";
 
 export type ProductPage = {
-  slug: "" | "gif-compressor" | "compress-to-50kb" | "compress-to-200kb";
+  slug: "" | "gif-compressor" | "compress-to-50kb" | "compress-to-200kb" | "image-resizer";
   keyword: string;
   title: string;
   description: string;
@@ -9,6 +9,7 @@ export type ProductPage = {
   lead: string;
   targetKb: number;
   gifOnly?: boolean;
+  resizer?: boolean;
   faq: Array<{ question: string; answer: string }>;
 };
 
@@ -117,6 +118,7 @@ export const productPages: Record<ProductPage["slug"], ProductPage> = {
       },
     ],
   },
+  "image-resizer": { slug: "image-resizer", keyword: "image resizer", title: "Image Resizer - Resize Images Online, Free & Private", description: "Resize JPG, PNG, WebP or GIF images locally in your browser. Free, private and no upload required.", heading: "Resize Image Without Uploading", lead: "Change image dimensions directly in your browser. Your files never leave your device.", targetKb: 100, resizer: true, faq: [...sharedFaq, { question: "Can I resize an image for free?", answer: "Yes. Resize images locally without signing up or paying." }, { question: "Can I keep the original proportions?", answer: "Yes. The resizer keeps the aspect ratio locked by default to prevent distortion." }] },
 };
 
 export function pagePath(page: ProductPage) {
